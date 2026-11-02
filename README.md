@@ -97,6 +97,7 @@ foodstories-inventory/
 │   ├── seed.sql
 │   
 ├── index.php
+├── API_DOCUMENTATION.md
 ├── README.md
 └── .gitignore
 ```
@@ -120,6 +121,7 @@ routes/api.php				                    Which defines how API requests are routed.
 sql/schema.sql				                    Creates structure or Contains SQL statements for creating database tables.
 sql/seed.sql									Creates sample data
 index.php				                        Typically serves as the entry point for incoming requests.
+API_DOCUMENTATION.md							Consists of endpoints, request payloads, response examples, and error cases.
 README.md				                        Documentation project setup and usage.
 
 
