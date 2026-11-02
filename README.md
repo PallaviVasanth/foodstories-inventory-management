@@ -221,7 +221,9 @@ The application incorporates business rules to maintain reliable inventory data,
 - Input validation.
 - Consistent stock movement records.
 
-  ## When I open CMD
+  ## When user open CMD
+  
+To view database
 
 Step 1: "C:\Program Files\MySQL\MySQL Server 26.10\bin\mysql.exe" -u root -p
 Step 2: MySQL Password
