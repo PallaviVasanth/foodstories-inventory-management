@@ -93,8 +93,9 @@ foodstories-inventory/
 │   └── api.php
 │
 ├── sql/
-│   └── Database scripts
-│
+│   ├── schema.sql	
+│   ├── seed.sql
+│   
 ├── index.php
 ├── README.md
 └── .gitignore
