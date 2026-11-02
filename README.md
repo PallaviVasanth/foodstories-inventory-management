@@ -16,6 +16,45 @@ The system is designed to simplify inventory operations, maintain accurate stock
 - **Data Validation:** Apply validation rules to maintain data consistency.
 - **Database Management:** Store and manage inventory data using MySQL.
 
+ ## Features
+## Product Management
+Create Product
+Retrieve Product By ID
+Retrieve All Products
+Update Product
+Delete Product
+Search Products By Name or SKU
+Filter Products By Category
+
+## Stock Management
+Record Incoming Stock
+Record Outgoing Stock
+Prevent Negative Inventory
+Maintain Current Stock Levels
+Transaction-Based Stock Updates
+
+## Stock Movement History
+Track Every Inventory Change
+Store Movement Type (IN / OUT)
+Store Quantity
+Store Reason
+Store Timestamp
+
+## Inventory Summary
+Total Products
+Total Units In Stock
+Low Stock Products
+Out Of Stock Products
+
+## Validation & Data Integrity
+Unique SKU Validation
+Required Field Validation
+Non-Negative Price Validation
+Non-Negative Quantity Validation
+Transaction Management
+Consistent JSON Responses
+
+
 ## 🛠️ Technologies Used
 
 | Technology | Purpose |
@@ -67,19 +106,20 @@ Folder -> foodstories_inventory -> Inside this
 
 Folder/File				                        Purpose
 			
-config/database.php			                  Used to store the database details of connection configuration.
-controllers/ProductController.php	        Used to handle product-related API operations.
-controllers/StockController.php		        Used to handle stock details like additions of the stocks, removals of the stocks, and also the history of the stocks.
-controllers/SummaryController.php	        Used to handle summary requests.
+config/database.php			                  	Used to store the database details of connection configuration.
+controllers/ProductController.php	        	Used to handle product-related API operations.
+controllers/StockController.php		        	Used to handle stock details like additions of the stocks, removals of the stocks, and also the history of the stocks.
+controllers/SummaryController.php	        	Used to handle summary requests.
 helpers/Response.php			                Used to help in format API responses.
 helpers/Validator.php			                Used to validate incoming data.
-models/Category.php			                  Used for category related database operations.
-models/Product.php			                  Used for handling product's database operations.
-models/Stock_Movement.php		              Used for handling stock movement records.
+models/Category.php			                  	Used for category related database operations.
+models/Product.php			                  	Used for handling product's database operations.
+models/Stock_Movement.php		              	Used for handling stock movement records.
 routes/api.php				                    Which defines how API requests are routed.
-sql/schema.sql				                    Contains SQL statements for creating database tables.
-index.php				                          Typically serves as the entry point for incoming requests.
-README.md				                          Documentation project setup and usage.
+sql/schema.sql				                    Creates structure or Contains SQL statements for creating database tables.
+sql/seed.sql									Creates sample data
+index.php				                        Typically serves as the entry point for incoming requests.
+README.md				                        Documentation project setup and usage.
 
 
 *Note: Update this structure to match the actual files in your repository.*
@@ -149,14 +189,12 @@ http://localhost:8000
 
 The application uses MySQL to store and manage inventory-related information.
 
-The database includes tables for:
+The application uses MySQL and consists of the following core tables:
 
-- Categories
-- Products
-- Stock Movements
-- Suppliers
-- Purchase Orders
-- Purchase Order Items
+- categories
+- products
+- stock_movements
+These tables manage product information, inventory quantities, and stock movement history.
 
 These tables help maintain relationships between products, categories, suppliers, and inventory transactions.
 
