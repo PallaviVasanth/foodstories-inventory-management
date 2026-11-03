@@ -1,0 +1,299 @@
+Issues Faced
+
+Like what are the issues or errors we faced during this development?
+Yes, and this is actually a very useful section to include in your README under "Challenges Faced and Solutions" or to discuss during the evaluation.
+
+Issues Encountered During Development
+1. Local Development Server Setup Issue
+Problem
+Initially Postman returned:
+
+
+
+ECONNREFUSED 127.0.0.1:80
+Cause
+No PHP web server was running.
+
+Solution
+Installed and verified PHP.
+
+Started server using:
+
+
+
+C:\php\php.exe -S localhost:8000
+Verified via browser:
+
+
+
+http://localhost:8000
+2. PHP Path Not Configured
+Problem
+Running:
+
+
+
+php -S localhost:8000
+returned:
+
+
+
+'php' is not recognized as an internal or external command
+Cause
+PHP was not added to Windows PATH.
+
+Solution
+Used the full executable path:
+
+
+
+C:\php\php.exe -S localhost:8000
+3. Routing Not Working
+Problem
+Endpoints like:
+
+
+
+GET /products/1
+returned blank pages.
+
+Cause
+Only:
+
+
+
+GET /products
+route had been configured.
+
+Solution
+Implemented route matching using:
+
+
+
+preg_match()
+Example:
+
+
+
+preg_match('#^/products/(\d+)$#', $uri, $matches)
+4. Typographical Error in Route File
+Problem
+PHP Parse Error.
+
+Cause
+Accidentally typed:
+
+
+
+iif
+instead of:
+
+
+
+if
+Solution
+Corrected syntax.
+
+5. Functions Placed Outside Class
+Problem
+PHP Parse Error:
+
+
+
+unexpected token "public"
+Cause
+Methods were added outside the class closing brace.
+
+Example:
+
+
+
+}
+public function show()
+Solution
+Moved methods inside the class.
+
+6. Duplicate Method Declaration
+Problem
+Error:
+
+
+
+Cannot redeclare Product::update()
+Cause
+Two identical methods existed:
+
+
+
+update()
+update()
+Solution
+Removed duplicated method.
+
+7. Duplicate History Method
+Problem
+Error:
+
+
+
+Cannot redeclare StockController::history()
+Cause
+History method was accidentally added twice.
+
+Solution
+Removed duplicate method.
+
+8. Duplicate Routes
+Problem
+Route conflicts occurred.
+
+Cause
+Movement history route was registered twice:
+
+
+
+/products/{id}/movements
+Solution
+Removed duplicate route definition.
+
+9. Incorrect Function Scope
+Problem
+Error:
+
+
+
+unexpected token "try"
+Cause
+A function was closed too early:
+
+
+
+}
+try {
+The try block was outside the function body.
+
+Solution
+Moved the entire transaction logic inside the function.
+
+10. Stock Management Logic Error
+Problem
+Stock validation logic was accidentally copied into Stock IN.
+
+Example:
+
+
+
+Insufficient stock
+check was present during stock addition.
+
+Cause
+Logic reuse mistake.
+
+Solution
+Removed stock-availability validation from Stock IN and kept it only in Stock OUT.
+
+11. Blank Pages During Testing
+Problem
+Browser showed blank screen.
+
+Cause
+PHP errors were hidden.
+
+Solution
+Enabled debugging:
+
+
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+This helped identify the actual errors.
+
+12. SKU Constraint Handling
+Problem
+Duplicate SKU caused raw MySQL exception.
+
+Cause
+Validation was missing.
+
+Solution
+Implemented:
+
+
+
+skuExists()
+and returned:
+
+
+
+{
+  "success": false,
+  "message": "SKU already exists"
+}
+with:
+
+
+
+409 Conflict
+13. Transaction Consistency Challenges
+Problem
+Stock update and movement history needed to remain synchronized.
+
+Solution
+Implemented:
+
+
+
+beginTransaction()
+commit()
+rollBack()
+in:
+
+
+
+stockIn()
+stockOut()
+This ensured consistency.
+
+14. Concurrency Protection
+Problem
+Assignment required:
+
+
+
+Concurrent stock removal requests
+must not produce negative inventory.
+Solution
+Implemented:
+
+
+
+SELECT quantity
+FROM products
+WHERE id = ?
+FOR UPDATE
+through:
+
+
+
+getQuantityForUpdate()
+to lock inventory rows during transactions.
+
+15. Route Ordering Issue
+Problem
+Specific routes can be shadowed by generic routes.
+
+Example:
+
+
+
+/products/4/movements
+might match:
+
+
+
+/products/{id}
+if route order is incorrect.
+
+Solution
+Carefully organized routes and tested endpoint matching.
+

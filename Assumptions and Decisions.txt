@@ -1,0 +1,456 @@
+Assumptions and Decisions
+
+My mentor asked me to learn about the assumptions and what are the decision I made for this project like why did I use this instead of other like that can u explain with questions can be asked and to answer for the questions
+This is actually one of the most important parts of the evaluation.
+
+Most interviewers won't spend much time asking:
+
+"How does your code work?"
+
+Instead they'll ask:
+
+"Why did you design it this way?"
+
+"What assumptions did you make?"
+
+"Why did you choose this approach over another one?"
+
+1. Why did you use Core PHP instead of Laravel?
+Answer
+Because the assignment specifically required:
+
+
+
+Use Core PHP without Laravel or another backend framework.
+I intentionally used Core PHP to demonstrate my understanding of:
+
+Routing
+HTTP request handling
+PDO
+CRUD operations
+Validation
+Transactions
+instead of relying on framework abstractions.
+
+2. Why did you use PDO?
+Answer
+PDO provides:
+
+Prepared statements
+Database abstraction
+Better security
+Exception handling
+The assignment explicitly required PDO and prepared statements.
+
+Example:
+
+
+
+$stmt = $this->conn->prepare($sql);
+instead of:
+
+
+
+mysqli_query(...)
+because prepared statements protect against SQL injection.
+
+3. Why did you separate Models and Controllers?
+Answer
+For maintainability and separation of concerns.
+
+Model
+Handles:
+
+
+
+Database interaction
+SQL queries
+Data retrieval
+Controller
+Handles:
+
+
+
+Requests
+Validation
+Responses
+Business logic
+Example:
+
+
+
+Product.php
+contains:
+
+
+
+create()
+update()
+delete()
+while
+
+
+
+ProductController.php
+contains:
+
+
+
+store()
+update()
+delete()
+This keeps code organized and scalable.
+
+4. Why did you create Response.php?
+Answer
+To standardize API responses.
+
+Instead of writing:
+
+
+
+echo json_encode(...)
+everywhere, I created:
+
+
+
+Response::success()
+Response::error()
+Benefits:
+
+Consistent response structure
+Reusable code
+Easier maintenance
+5. Why did you keep categories in a separate table?
+Answer
+Normalization.
+
+Instead of:
+
+
+
+Bakery
+Bakery
+Bakery
+Bakery
+being stored repeatedly in products,
+
+I created:
+
+
+
+categories
+and referenced it using:
+
+
+
+category_id
+Benefits:
+
+Less redundancy
+Better consistency
+Easier updates
+6. Why did you use a SKU?
+Answer
+The requirements stated:
+
+
+
+Every product must have a unique SKU.
+SKU is a business identifier.
+
+Product names can repeat.
+
+Example:
+
+
+
+Chocolate Cake
+Chocolate Cake
+But:
+
+
+
+CAKE001
+CAKE002
+must remain unique.
+
+7. Why did you validate on the server side?
+Answer
+The assignment required server-side validation.
+
+Client-side validation can be bypassed.
+
+Example:
+
+
+
+{
+  "price": -100
+}
+The server still must reject it.
+
+8. Why did you check SKU uniqueness before inserting?
+Answer
+To provide a better API experience.
+
+Without validation:
+
+
+
+UNIQUE CONSTRAINT ERROR
+would be returned by MySQL.
+
+Instead I return:
+
+
+
+{
+  "success": false,
+  "message": "SKU already exists"
+}
+with:
+
+
+
+409 Conflict
+which is more user-friendly.
+
+9. Why did you use Transactions?
+Very important question.
+
+Answer
+Stock operations update multiple tables:
+
+Example
+Stock IN
+
+Table 1
+
+
+products
+update quantity
+
+Table 2
+
+
+stock_movements
+insert movement
+
+If one operation succeeds and the other fails:
+
+
+
+Data becomes inconsistent.
+Therefore I used:
+
+
+
+beginTransaction()
+commit()
+rollBack()
+to ensure both succeed or both fail.
+
+10. Why create stock_movements table?
+Answer
+To maintain audit history.
+
+Current quantity alone doesn't tell us:
+
+
+
+Who changed stock?
+When?
+Why?
+How much?
+Movement history stores:
+
+
+
+IN / OUT
+Quantity
+Reason
+Timestamp
+which improves traceability.
+
+11. Why use IN and OUT instead of positive and negative numbers?
+Answer
+Readability.
+
+This:
+
+
+
+IN
+OUT
+is easier to understand than:
+
+
+
++20
+-10
+and reduces ambiguity.
+
+12. Why did you implement Stock OUT validation?
+Answer
+Business requirement.
+
+The assignment explicitly says:
+
+
+
+Stock removal must not exceed available inventory.
+So before removing stock:
+
+
+
+if ($requested > $available)
+the request is rejected.
+
+13. Why implement movement history endpoint?
+Answer
+Requirement:
+
+
+
+Retrieve stock movement history for a product.
+The endpoint:
+
+
+
+GET /products/{id}/movements
+allows users to view inventory changes over time.
+
+14. Why use HTTP Status Codes?
+Answer
+To follow REST conventions.
+
+Examples:
+
+
+
+200 OK
+Successful request.
+
+
+
+201 Created
+Resource created.
+
+
+
+404 Not Found
+Product doesn't exist.
+
+
+
+409 Conflict
+Duplicate SKU.
+
+
+
+422 Unprocessable Entity
+Validation failure.
+
+15. Why create Inventory Summary endpoint?
+Answer
+Managers often need statistics instead of raw data.
+
+The endpoint provides:
+
+
+
+Total products
+Total units
+Low stock products
+Out of stock products
+in a single API call.
+
+16. Why use FOR UPDATE?
+This is the strongest answer in the project.
+
+Answer
+To handle concurrent stock removal safely.
+
+Without locking:
+
+Two requests could read:
+
+
+
+Stock = 20
+at the same time.
+
+Both subtract:
+
+
+
+15
+resulting in:
+
+
+
+-10
+which is invalid.
+
+Using:
+
+
+
+FOR UPDATE
+locks the row until the transaction completes.
+
+This prevents negative inventory.
+
+17. Why did you not implement Authentication?
+Answer
+The assignment explicitly excluded:
+
+
+
+Authentication
+Authorization
+Therefore I intentionally focused only on inventory functionality.
+
+18. Why didn't you implement Supplier Management?
+Answer
+Because the scope exclusions listed:
+
+
+
+Supplier Management
+Purchase Orders
+as out of scope.
+
+I kept the focus on required inventory features.
+
+Assumptions You Can Mention
+Assumption 1
+Each product belongs to exactly one category.
+
+Assumption 2
+SKU must remain globally unique.
+
+Assumption 3
+Quantity cannot be negative.
+
+Assumption 4
+Price cannot be negative.
+
+Assumption 5
+Stock movements are immutable records.
+
+Once inserted:
+
+
+
+movement history is not edited.
+Assumption 6
+No authentication was required because it was excluded from the scope.
+
+If your mentor asks "Explain your design decisions", these 18 questions are almost exactly the kind of discussion points interviewers look for in a backend assignment review.
+
+
+
+
+
